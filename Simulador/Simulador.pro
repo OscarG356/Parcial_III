@@ -9,12 +9,14 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    canon.cpp \
     fisica_proyectil.cpp \
     main.cpp \
     mainwindow.cpp \
     proyectil_graph.cpp
 
 HEADERS += \
+    canon.h \
     fisica_proyectil.h \
     mainwindow.h \
     proyectil_graph.h
