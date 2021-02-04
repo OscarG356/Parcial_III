@@ -1,7 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <fisica_proyectil.h>
+#include <proyectil_graph.h>
+#include <QGraphicsScene>
 #include <QMainWindow>
+#include <QMessageBox>
+#include <canon.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -15,7 +20,23 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void on_pushButton_clicked();
+    void on_pushButton_2_clicked();
+    void on_pushButton_3_clicked();
+    void on_pushButton_4_clicked();
+    void on_pushButton_5_clicked();
+
 private:
     Ui::MainWindow *ui;
+    QGraphicsScene *scene = new QGraphicsScene;
+
+    int v_limit, h_limit;
+
+    QMessageBox msgBox;
+
+    QList<Canon *>Canones;
+    QList<Proyectil_Graph *>Disparos;
+
 };
 #endif // MAINWINDOW_H

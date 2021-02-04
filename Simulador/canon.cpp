@@ -5,6 +5,15 @@ Canon::Canon(float px, float py, int id_)
     posx = px;
     posy = py;
     id = id_;
+    if(id==1 || id ==2){
+        r = 10;
+    }
+    else if(id == 3){
+        r = 0.05*dist;
+    }
+    else{
+        r = 0.025*dist;
+    }
     setPos(posx,posy);
 }
 
@@ -18,7 +27,7 @@ void Canon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     painter->drawEllipse(boundingRect());
     if(id==1)
         painter->setBrush(Qt::red);
-    else
+    else if(id==2)
         painter->setBrush(Qt::blue);
 }
 

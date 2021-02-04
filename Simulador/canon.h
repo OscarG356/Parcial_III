@@ -10,7 +10,7 @@ class Canon: public QObject, public QGraphicsItem
     float posx ,posy;
     int id;
     float dist;
-    float r = 10;
+    float r;
 
 public:
     Canon(float px, float py, int id_);
