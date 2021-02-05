@@ -328,7 +328,11 @@
        <string>Velocidad Inicial</string>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
+     <widget class="QDoubleSpinBox" name="doubleSpinBox">
+      <property name="maximum">
+       <double>1000.000000000000000</double>
+      </property>
+     </widget>
     </widget>
     <widget class="QSplitter" name="splitter_6">
      <property name="orientation">
@@ -339,7 +343,11 @@
        <string>Ángulo</string>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="doubleSpinBox_2"/>
+     <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+      <property name="maximum">
+       <double>90.000000000000000</double>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="QPushButton" name="pushButton_7">

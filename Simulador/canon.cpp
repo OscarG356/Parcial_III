@@ -13,7 +13,7 @@ Canon::Canon(float px, float py, int id_, float dist_)
     id = id_;
     dist = dist_;
     if(id==1 || id ==2){
-        r = 10;
+        r = 7;
     }
     else if(id == 3){
         r = 0.05*dist;

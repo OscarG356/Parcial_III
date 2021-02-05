@@ -53,13 +53,14 @@ bool MainWindow::Impacto(float XO, float YO, float XD, float YD, float Rang)
     bool flag= false;
 
     if(sqrt(pow((XO - XD),2)+pow((YO - YD),2)) < Rang){
+        qDebug()<<sqrt(pow((XO - XD),2)+pow((YO - YD),2));
         flag = true;
     }
 
     return flag;
 }
 
-void MainWindow::Simulacion_1(float XO,float YO, float XD, float YD, float R)
+void MainWindow::Simulacion_1(float XD, float YD, float R)
 {
 
     int flag = 0;
@@ -76,11 +77,8 @@ void MainWindow::Simulacion_1(float XO,float YO, float XD, float YD, float R)
             yf = 0.0;
             for(t = 0; ; t++){
                 xf = 10+Vxo*t;
-//                qDebug()<<Canones.at(0)->getPosy() + Vy0*t -(0.5*G*t*t)<<v_limit-Canones.at(0)->getPosy() + Vy0*t -(0.5*G*t*t)<<v_limit-(Canones.at(0)->getPosy() + Vy0*t -(0.5*G*t*t));
                 yf = (v_limit-Canones.at(0)->getPosy()) + Vy0*t -(0.5*G*t*t);
                 if(Impacto(xf,yf,XD,YD,R)){
-                    qDebug()<<xf<<yf<<XD<<YD;
-                    qDebug()<<R;
                     Disparos.push_back(new Proyectil_Graph(10,ui->PYO->value(),angulo,V0o,XD,1));
                     scene->addItem(Disparos.back());
                     Disparos.push_back(new Proyectil_Graph(10,ui->PYO->value(),angulo,V0o,XD,3));
@@ -102,44 +100,111 @@ void MainWindow::Simulacion_1(float XO,float YO, float XD, float YD, float R)
         msgBox.setText("No se encontraron al menos 3 disparos efectivos");
         msgBox.exec();
     }
+}
 
+void MainWindow::Simulacion_2(float YO, float XD, float YD, float R)
+{
+    int flag = 0;
+    float Vxo,Vy0,xf,yf;
+    int V0o = 0;
+    int t = 0;
+    int angulo = 0;
+    for(V0o = 0;V0o < 500; V0o+=5){
+        for(angulo = 0; angulo < 90; angulo++){
+            Vxo = V0o*cos((angulo+90)*pi/180);
+            Vy0 = V0o*sin((angulo+90)*pi/180);
+            xf = 0.0;
+            yf = 0.0;
+            for(t = 0; ; t++){
+                xf = XD+Vxo*t;
+                yf = (v_limit-Canones.at(1)->getPosy()) + Vy0*t -(0.5*G*t*t);
+                if(Impacto(xf,yf,10,YO,R)){                    
+                    qDebug()<<xf<<yf<<10<<YO<<R;
+                    Disparos.push_back(new Proyectil_Graph(XD,YD,angulo+90,V0o,XD,2));
+                    scene->addItem(Disparos.back());
+                    Disparos.push_back(new Proyectil_Graph(XD,YD,angulo+90,V0o,XD,4));
+                    scene->addItem(Disparos.back());
+                    flag += 1;
+                    V0o += 50;
+                    break;
+                }
+                if(yf < 0 || xf>XD+R){
+                    break;
+                }
+            }
+            if(flag == 3) break;
 
+        }
+        if(flag == 3) break;
+    }
+    if(flag < 3){
+        msgBox.setText("No se encontraron al menos 3 disparos efectivos");
+        msgBox.exec();
+    }
+}
 
-//    int flag = 0;
-//    float x,y;
-//    float Vx,Vy;
-//    int VI0 = 0;
-//    int t = 0;
-//    int angle = 0;
-//    for(VI0 = 0;VI0<500; VI0 += 5){
-//        for(angle = 0; angle < 90; angle++){
-//            Vx = VI0*cos(angle*pi/180);
-//            Vy = VI0*sin(angle*pi/180);
-//            x = 10;
-//            y = ui->PYO->value();
-//            for(t = 0; ; t++){
-//                x = Vx*t;
-//                y = YD + Vy*t -(0.5*G*t*t);
-//                float Rang=XD*0.05;
-//                if(Impacto(x,y,XD,YD,Rang)){
-//                    Disparos.push_back(new Proyectil_Graph(10,ui->PYO->value(),angle,VI0,XD,1));
-//                    scene->addItem(Disparos.back());
-//                    flag += 1;
-//                    VI0 += 50;
-//                    break;
-//                }
-//                if(y < 0){
-//                    break;
-//                }
-//            }
-//            if(flag == 3) break;
+void MainWindow::Simulacion_3(float Ang, float VO0)
+{
+    int flag = 0;
+    float xf,yf, x2,y2;
+    float Vxo,Vy0, Vxoo,Vyoo;
+    float aux,auy;
+    bool flag2;
+    int V0o = 0;
+    int Time = 2;
+    float angulo = 0;
+    Vxoo = VO0*cos((Ang)*pi/180);
+    Vyoo = VO0*sin((Ang)*pi/180);
+    for(V0o = 0;V0o<500; V0o +=5){
+        for(angulo = 0; angulo < 90; angulo++){
+            Vxo = V0o*cos((angulo+90)*pi/180);
+            Vy0 = V0o*sin((angulo+90)*pi/180);
+            xf = 0.0;
+            yf = 0.0;
+            x2 = 0.0;
+            y2 = 0.0;
+            for(int t=0; ; t++){
+                xf = Canones.at(1)->getPosx()+Vxo*t;
+                yf = (v_limit-Canones.at(1)->getPosy()) + Vy0*t -(0.5*G*t*t);
+                x2 = Canones.at(0)->getPosx()+Vxoo*(t+Time);
+                y2 = (v_limit-Canones.at(0)->getPosy()) + Vyoo*t -(0.5*G*(t+Time)*(t+Time));
+                for(int t2 = t; ;t2++){
+                    aux = Canones.at(1)->getPosx()+Vxo*t2;
+                    auy = Canones.at(1)->getPosy() + Vy0*t2 -(0.5*G*t2*t2);
+                    if(Impacto(x2,y2,aux,auy,Canones.at(1)->getPosx())){
+                        flag2 = 1;
+                        break;
+                    }
+                    if(auy < 0){
+                        break;
+                    }
+                }
+                if(flag2){
+                    flag2 = 0;
+                    break;
+                }
+                if(Impacto(xf,yf,x2,y2,Canones.at(2)->getR())){
+                    Disparos.push_back(new Proyectil_Graph(Canones.at(1)->getPosx(),Canones.at(1)->getPosy(),angulo+90,V0o,Canones.at(1)->getPosx(),2));
+                    scene->addItem(Disparos.back());
+                    Disparos.push_back(new Proyectil_Graph(Canones.at(1)->getPosx(),Canones.at(1)->getPosy(),angulo+90,V0o,Canones.at(1)->getPosx(),4));
+                    scene->addItem(Disparos.back());
+                    flag += 1;
+                    V0o += 50;
+                    break;
+                }
+                if(yf < 0){
+                    break;
+                }
+            }
+            if(flag == 3) break;
 
-//        }
-//        if(flag == 3) break;
-//    }
-//    if(flag < 3){
-//        msgBox.setText("No se encontraron al menos 3 disparos efectivos");
-
+        }
+        if(flag == 3) break;
+    }
+    if(flag < 3){
+        msgBox.setText("No se encontraron al menos 3 disparos efectivos");
+        msgBox.exec();
+    }
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -203,8 +268,20 @@ void MainWindow::on_pushButton_6_clicked()
     ui->pushButton_7->show();
 
     if(Seed==1){
-        Simulacion_1(Canones.at(0)->getPosx(),Canones.at(0)->getPosy(),Canones.at(1)->getPosx(),v_limit-Canones.at(1)->getPosy(),Canones.at(0)->getR());
-        move->start(200);
+        Simulacion_1(Canones.at(1)->getPosx(),v_limit-Canones.at(1)->getPosy(),Canones.at(0)->getR());
+        move->start(100);
+    }
+    else if(Seed==2){
+        Simulacion_2(v_limit-Canones.at(0)->getPosy(),Canones.at(1)->getPosx(),v_limit-Canones.at(1)->getPosy(),Canones.at(2)->getR());
+        move->start(100);
+    }
+    else if(Seed==3){
+        Simulacion_3(ui->doubleSpinBox_2->value(),ui->doubleSpinBox->value());
+        Disparos.push_back(new Proyectil_Graph(Canones.at(0)->getPosx(),v_limit-Canones.at(0)->getPosy(),ui->doubleSpinBox_2->value(),ui->doubleSpinBox->value(),Canones.at(1)->getPosx(),1));
+        scene->addItem(Disparos.back());
+        Disparos.push_back(new Proyectil_Graph(Canones.at(0)->getPosx(),v_limit-Canones.at(0)->getPosy(),ui->doubleSpinBox_2->value(),ui->doubleSpinBox->value(),Canones.at(1)->getPosx(),3));
+        scene->addItem(Disparos.back());
+        move->start(100);
     }
 }
 
@@ -212,8 +289,9 @@ void MainWindow::on_pushButton_7_clicked()
 {
     move->stop();
     ui->pushButton_7->hide();
-    Canones.clear();
     scene->clear();
+    Canones.clear();
+    Disparos.clear();
 }
 
 void MainWindow::Actualizar()

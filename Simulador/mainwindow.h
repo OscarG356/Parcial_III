@@ -23,7 +23,9 @@ public:
 
     void Preparar_Simulacion();
     bool Impacto(float XO,float YO,float XD,float YD,float Rang);
-    void Simulacion_1(float XO,float YO, float XD, float YD, float R);
+    void Simulacion_1(float XD, float YD, float R);
+    void Simulacion_2(float YO, float XD, float YD, float R);
+    void Simulacion_3(float Ang, float VO0);
 
 private slots:
     void on_pushButton_clicked();
