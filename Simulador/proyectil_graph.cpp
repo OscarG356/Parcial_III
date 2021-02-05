@@ -1,12 +1,21 @@
 #include "proyectil_graph.h"
 
-Proyectil_Graph::Proyectil_Graph(float px, float py, float ang, float v)
+Proyectil_Graph::Proyectil_Graph(float px, float py, float ang, float v,float dist_,int id_)
 {
     float posx,posy;
     posx = px;
     posy = py;
     setPos(posx,posy);
     r = 5;
+    id=id_;
+    if(id==3){
+        Rang = dist_*0.05;
+        r = Rang;
+    }
+    else if(id==4){
+        Rang = dist_*0.025;
+        r = Rang;
+    }
 
     Disparo = new Fisica_Proyectil(posx,posy,ang,v,r);
 }
@@ -23,11 +32,11 @@ QRectF Proyectil_Graph::boundingRect() const
 
 void Proyectil_Graph::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    painter->drawEllipse(boundingRect());
     if(id==1)
         painter->setBrush(Qt::red);
-    else
+    else if(id==2)
         painter->setBrush(Qt::blue);
+    painter->drawEllipse(boundingRect());
 }
 
 void Proyectil_Graph::actualizar(float v_limit)
@@ -49,4 +58,9 @@ void Proyectil_Graph::setId(int value)
 Fisica_Proyectil *Proyectil_Graph::getDisparo() const
 {
     return Disparo;
+}
+
+float Proyectil_Graph::getRang() const
+{
+    return Rang;
 }

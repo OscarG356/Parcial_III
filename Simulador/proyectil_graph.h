@@ -15,10 +15,11 @@ class Proyectil_Graph: public QObject, public QGraphicsItem
 {
     int id;
     float r;
+    float Rang;
     Fisica_Proyectil *Disparo;
 
 public:
-    Proyectil_Graph(float px, float py,float ang,float v);
+    Proyectil_Graph(float px, float py,float ang,float v,float dist_,int id_);
     ~Proyectil_Graph();
     QRectF boundingRect() const;
     void paint(QPainter *painter,const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -27,6 +28,7 @@ public:
     Fisica_Proyectil *getDisparo() const;
     int getId() const;
     void setId(int value);
+    float getRang() const;
 };
 
 #endif // PROYECTIL_GRAPH_H

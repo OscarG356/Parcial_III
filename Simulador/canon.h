@@ -13,7 +13,7 @@ class Canon: public QObject, public QGraphicsItem
     float r;
 
 public:
-    Canon(float px, float py, int id_);
+    Canon(float px, float py, int id_, float dist_);
 
     QRectF boundingRect() const;
     void paint (QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -23,6 +23,7 @@ public:
     int getId() const;
     float getDist() const;
     void setDist(float value);
+    float getR() const;
 };
 
 #endif // CANON_H

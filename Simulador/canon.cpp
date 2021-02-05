@@ -1,10 +1,17 @@
 #include "canon.h"
+#include <QDebug>
 
-Canon::Canon(float px, float py, int id_)
+float Canon::getR() const
+{
+    return r;
+}
+
+Canon::Canon(float px, float py, int id_, float dist_)
 {
     posx = px;
     posy = py;
     id = id_;
+    dist = dist_;
     if(id==1 || id ==2){
         r = 10;
     }
@@ -24,11 +31,16 @@ QRectF Canon::boundingRect() const
 
 void Canon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    painter->drawEllipse(boundingRect());
-    if(id==1)
+    if(id==3 || id==4)
+        painter->drawEllipse(boundingRect());
+    else if(id==1){
         painter->setBrush(Qt::red);
-    else if(id==2)
+        painter->drawEllipse(boundingRect());
+    }
+    else if(id==2){
         painter->setBrush(Qt::blue);
+        painter->drawEllipse(boundingRect());
+    }
 }
 
 float Canon::getPosy() const
