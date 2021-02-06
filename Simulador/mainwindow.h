@@ -27,6 +27,7 @@ public:
     void Simulacion_2(float YO, float XD, float YD, float R);
     void Simulacion_3(float Ang, float VO0);
     void Simulacion_4(float Ang, float VO0);
+    void Simulacion_5(float Ang, float VO0);
 
 private slots:
     void on_pushButton_clicked();
@@ -39,6 +40,7 @@ private slots:
 
 public slots:
     void Actualizar();
+    void Marca();
 
 private:
     Ui::MainWindow *ui;
@@ -48,11 +50,13 @@ private:
     int Seed;
 
     QTimer *move;
+    QTimer *trayectoria;
 
     QMessageBox msgBox;
 
     QList<Canon *>Canones;
     QList<Proyectil_Graph *>Disparos;
+    QList<Proyectil_Graph *>Rastro;
 
 };
 #endif // MAINWINDOW_H

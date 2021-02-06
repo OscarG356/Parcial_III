@@ -1,6 +1,16 @@
 #include "fisica_proyectil.h"
 #define pi 3.1416
 
+float Fisica_Proyectil::getAngulo() const
+{
+    return angulo;
+}
+
+float Fisica_Proyectil::getV() const
+{
+    return v;
+}
+
 Fisica_Proyectil::Fisica_Proyectil(float Px, float Py, float ang, float vel_i, float R)
 {
     px = Px;

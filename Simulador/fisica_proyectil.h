@@ -28,6 +28,8 @@ public:
 
     float getPx() const;
     float getPy() const;
+    float getAngulo() const;
+    float getV() const;
 };
 
 #endif // FISICA_PROYECTIL_H
