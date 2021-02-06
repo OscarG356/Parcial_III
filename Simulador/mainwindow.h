@@ -27,7 +27,7 @@ public:
     void Simulacion_2(float YO, float XD, float YD, float R);
     void Simulacion_3(float Ang, float VO0);
     void Simulacion_4(float Ang, float VO0);
-    void Simulacion_5(float Ang, float VO0);
+    void Simulacion_5(float Ang_o, float VO0,float Ang_d, float VD0);
 
 private slots:
     void on_pushButton_clicked();

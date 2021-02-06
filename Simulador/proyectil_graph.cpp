@@ -14,6 +14,10 @@ Proyectil_Graph::Proyectil_Graph(float px, float py, float ang, float v,float di
     }
     else if(id==4){
         Rang = dist_*0.025;
+        r = Rang;       
+    }
+    else if(id==5){
+        Rang = dist_*0.005;
         r = Rang;
     }
 

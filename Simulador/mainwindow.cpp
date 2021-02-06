@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->pushButton_6->hide();
     ui->splitter_7->hide();
     ui->pushButton_7->hide();
+    ui->splitter_8->hide();
 
     move = new QTimer(this);
     connect(move,SIGNAL(timeout()),this,SLOT(Actualizar()));
@@ -278,67 +279,80 @@ void MainWindow::Simulacion_4(float Ang, float VO0)
     }
 }
 
-void MainWindow::Simulacion_5(float Ang, float VO0)
+void MainWindow::Simulacion_5(float Ang_o, float VO0,float Ang_d, float VD0)
 {
     int flag = 0;
-    bool flag2;
-    float xf,yf, x2,y2;
-    float aux,auy;
-    float Vxo,Vy0, Vxoo,Vyoo;
-    int V0o = 0;
-    int Time = 2;
-    float angulo = 0;
-    Vxoo = VO0*cos((Ang)*pi/180);
-    Vyoo = VO0*sin((Ang)*pi/180);
-    for(V0o = 0;V0o<500; V0o +=5){
-        for(angulo = 0; angulo < 90; angulo++){
-            Vxo = V0o*cos((angulo+90)*pi/180);
-            Vy0 = V0o*sin((angulo+90)*pi/180);
-            xf = 0.0;
-            yf = 0.0;
-            x2 = 0.0;
-            y2 = 0.0;
-            for(int t=0; ; t++){
-                xf = Canones.at(1)->getPosx()+Vxo*t;
-                yf = (v_limit-Canones.at(1)->getPosy()) + Vy0*t -(0.5*G*t*t);
-                x2 = Canones.at(0)->getPosx()+Vxoo*(t+Time);
-                y2 = (v_limit-Canones.at(0)->getPosy()) + Vyoo*(t+Time) -(0.5*G*(t+Time)*(t+Time));
-                for(int t2 = t; ;t2++){
-                    aux = Canones.at(1)->getPosx()+Vxo*t2;
-                    auy = Canones.at(1)->getPosy() + Vy0*t2 -(0.5*G*t2*t2);
-                    if(Impacto(x2,y2,aux,auy,Canones.at(2)->getR())){
-                        flag2 = 1;
+        bool flag2;
+        float xf,yf, x2,y2, x3,y3;
+        float aux,auy;
+        float Vxo,Vy0, Vxoo,Vyoo,Vxd,Vyd;
+        int V0o = 0;
+        int Time = 2, time3=3, t2;
+        float angulo = 0;
+        Vxoo = VO0*cos((Ang_o)*pi/180);
+        Vyoo = VO0*sin((Ang_o)*pi/180);
+        Vxd= VD0*cos((Ang_d+90)*pi/180);
+        Vyd= VD0*sin((Ang_d+90)*pi/180);
+        for(V0o = 0;V0o<500; V0o +=5){
+            for(angulo = 0; angulo < 90; angulo++){
+                Vxo = V0o*cos((angulo)*pi/180);
+                Vy0 = V0o*sin((angulo)*pi/180);
+                xf = 0.0;
+                yf = 0.0;
+                x3 = 0.0;
+                y3 = 0.0;
+                x2 = 0.0;
+                y2 = 0.0;
+                for(int t=0; ; t++){
+                    x3 = Canones.at(1)->getPosx()+Vxd*t;
+                    y3 = (v_limit-Canones.at(1)->getPosy()) + Vyd*t -(0.5*G*t*t);
+                    x2 = Canones.at(0)->getPosx()+Vxoo*(t+Time);
+                    y2 = (v_limit-Canones.at(0)->getPosy()) + Vyoo*(t+Time) -(0.5*G*(t+Time)*(t+Time));
+                    xf = Canones.at(0)->getPosx()+Vxo*(t+time3);
+                    yf = (v_limit-Canones.at(0)->getPosy()) + Vy0*(t+time3) -(0.5*G*(t+time3)*(t+time3));
+
+                    if(!Impacto(x3,y3,x2,y2,Canones.at(2)->getR())){
+                        for(t2 = t; ;t2++){
+                            aux = Canones.at(0)->getPosx()+Vxo*t2;
+                            auy = Canones.at(0)->getPosy() + Vy0*t2 -(0.5*G*t2*t2);
+                            if(Impacto(x3,y3,aux,auy,(Canones.at(1)->getPosx()*0.005))){
+                                flag2 = 1;
+                                break;
+                            }
+                            if(auy < 0){
+                                break;
+                            }
+                        }
+                        if(flag2){
+                            flag2 = 0;
+                            break;
+                        }
+                        if (Impacto(xf,yf,x3,y3,(Canones.at(1)->getPosx()*0.005))){
+                            Disparos.push_back(new Proyectil_Graph(Canones.at(0)->getPosx(),v_limit-Canones.at(0)->getPosy(),angulo,V0o,Canones.at(1)->getPosx(),1));
+                            scene->addItem(Disparos.back());
+                            Disparos.push_back(new Proyectil_Graph(Canones.at(0)->getPosx(),v_limit-Canones.at(0)->getPosy(),angulo,V0o,Canones.at(1)->getPosx(),5));
+                            scene->addItem(Disparos.back());
+                            flag += 1;
+                            V0o += 50;
+                            break;
+                        }
+
+
+
+                    }
+                    if(yf < 0){
                         break;
                     }
-                    if(auy < 0){
-                        break;
-                    }
                 }
-                if(flag2){
-                    flag2 = 0;
-                    break;
-                }
-                if(Impacto(xf,yf,x2,y2,Canones.at(2)->getR())){
-                    Disparos.push_back(new Proyectil_Graph(Canones.at(1)->getPosx(),v_limit-Canones.at(1)->getPosy(),angulo+90,V0o,Canones.at(1)->getPosx(),2));
-                    scene->addItem(Disparos.back());
-                    Disparos.push_back(new Proyectil_Graph(Canones.at(1)->getPosx(),v_limit-Canones.at(1)->getPosy(),angulo+90,V0o,Canones.at(1)->getPosx(),4));
-                    scene->addItem(Disparos.back());
-                    V0o += 50;
-                    break;
-                }
-                if(yf < 0){
-                    break;
-                }
+                if(flag == 3) break;
+
             }
             if(flag == 3) break;
-
         }
-        if(flag == 3) break;
-    }
-    if(flag < 3){
-        msgBox.setText("No se encontraron al menos 3 disparos efectivos");
-        msgBox.exec();
-    }
+        if(flag < 3){
+            msgBox.setText("No se encontraron al menos 3 disparos efectivos");
+            msgBox.exec();
+        }
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -390,8 +404,11 @@ void MainWindow::on_pushButton_5_clicked()
                    " ataque ofensivo sea efectivo.");
     msgBox.exec();
     Preparar_Simulacion();
-    ui->pushButton_6->show();
+    ui->pushButton_6->show();   
     Seed=5;
+    ui->splitter->hide();
+    ui->splitter_8->show();
+    ui->splitter_7->show();
 }
 
 void MainWindow::on_pushButton_6_clicked()
@@ -399,6 +416,7 @@ void MainWindow::on_pushButton_6_clicked()
     ui->pushButton_6->hide();
     ui->splitter->show();
     ui->splitter_7->hide();
+    ui->splitter_8->hide();
     ui->pushButton_7->show();
 
     if(Seed==1){
@@ -422,7 +440,15 @@ void MainWindow::on_pushButton_6_clicked()
         scene->addItem(Disparos.back());
     }
     else if(Seed==5){
-
+        Simulacion_5(ui->doubleSpinBox_2->value(),ui->doubleSpinBox->value(),ui->doubleSpinBox_4->value(),ui->doubleSpinBox_3->value());
+        Disparos.push_back(new Proyectil_Graph(Canones.at(0)->getPosx(),v_limit-Canones.at(0)->getPosy(),ui->doubleSpinBox_2->value(),ui->doubleSpinBox->value(),Canones.at(1)->getPosx(),1));
+        scene->addItem(Disparos.back());
+        Disparos.push_back(new Proyectil_Graph(Canones.at(0)->getPosx(),v_limit-Canones.at(0)->getPosy(),ui->doubleSpinBox_2->value(),ui->doubleSpinBox->value(),Canones.at(1)->getPosx(),3));
+        scene->addItem(Disparos.back());
+        Disparos.push_back(new Proyectil_Graph(Canones.at(1)->getPosx(),v_limit-Canones.at(1)->getPosy(),ui->doubleSpinBox_4->value()+90,ui->doubleSpinBox_3->value(),Canones.at(1)->getPosx(),2));
+        scene->addItem(Disparos.back());
+        Disparos.push_back(new Proyectil_Graph(Canones.at(1)->getPosx(),v_limit-Canones.at(1)->getPosy(),ui->doubleSpinBox_4->value()+90,ui->doubleSpinBox_3->value(),Canones.at(1)->getPosx(),4));
+        scene->addItem(Disparos.back());
     }
     move->start(100);
     trayectoria->start(500);
@@ -435,6 +461,7 @@ void MainWindow::on_pushButton_7_clicked()
     scene->clear();
     Canones.clear();
     Disparos.clear();
+    Rastro.clear();
 }
 
 void MainWindow::Actualizar()
