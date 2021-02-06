@@ -5,12 +5,14 @@
 #include <QPainter>
 #include <QTimer>
 
+//CLase que crea los cañones
+
 class Canon: public QObject, public QGraphicsItem
-{  
+{      
     float posx ,posy;
-    int id;
-    float dist;
-    float r;
+    int id; //Para identificar el rango
+    float dist; //Para calcular la distancia
+    float r; //Radio
 
 public:
     Canon(float px, float py, int id_, float dist_);

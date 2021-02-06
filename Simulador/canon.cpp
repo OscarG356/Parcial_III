@@ -12,15 +12,15 @@ Canon::Canon(float px, float py, int id_, float dist_)
     posy = py;
     id = id_;
     dist = dist_;
-    if(id==1 || id ==2){
-        r = 7;
-    }
-    else if(id == 3){
-        r = 0.05*dist;
-    }
-    else{
-        r = 0.025*dist;
-    }
+
+    //Se trata de un cañon
+    if(id==1 || id ==2) r = 7;
+
+    //*** Se trata de rangos ***
+    else if(id == 3) r = 0.05*dist;
+    else r = 0.025*dist;
+    //**************************
+
     setPos(posx,posy);
 }
 
@@ -31,6 +31,7 @@ QRectF Canon::boundingRect() const
 
 void Canon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    //Para graficar los rangos de daño
     if(id==3 || id==4)
         painter->drawEllipse(boundingRect());
     else if(id==1){
