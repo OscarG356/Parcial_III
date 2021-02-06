@@ -53,7 +53,7 @@ bool MainWindow::Impacto(float XO, float YO, float XD, float YD, float Rang)
     bool flag= false;
 
     if(sqrt(pow((XO - XD),2)+pow((YO - YD),2)) < Rang){
-        qDebug()<<sqrt(pow((XO - XD),2)+pow((YO - YD),2));
+//        qDebug()<<sqrt(pow((XO - XD),2)+pow((YO - YD),2));
         flag = true;
     }
 
@@ -146,10 +146,10 @@ void MainWindow::Simulacion_2(float YO, float XD, float YD, float R)
 void MainWindow::Simulacion_3(float Ang, float VO0)
 {
     int flag = 0;
-    float xf,yf, x2,y2;
-    float Vxo,Vy0, Vxoo,Vyoo;
-    float aux,auy;
     bool flag2;
+    float xf,yf, x2,y2;
+    float aux,auy;
+    float Vxo,Vy0, Vxoo,Vyoo;
     int V0o = 0;
     int Time = 2;
     float angulo = 0;
@@ -167,11 +167,11 @@ void MainWindow::Simulacion_3(float Ang, float VO0)
                 xf = Canones.at(1)->getPosx()+Vxo*t;
                 yf = (v_limit-Canones.at(1)->getPosy()) + Vy0*t -(0.5*G*t*t);
                 x2 = Canones.at(0)->getPosx()+Vxoo*(t+Time);
-                y2 = (v_limit-Canones.at(0)->getPosy()) + Vyoo*t -(0.5*G*(t+Time)*(t+Time));
+                y2 = (v_limit-Canones.at(0)->getPosy()) + Vyoo*(t+Time) -(0.5*G*(t+Time)*(t+Time));
                 for(int t2 = t; ;t2++){
                     aux = Canones.at(1)->getPosx()+Vxo*t2;
                     auy = Canones.at(1)->getPosy() + Vy0*t2 -(0.5*G*t2*t2);
-                    if(Impacto(x2,y2,aux,auy,Canones.at(1)->getPosx())){
+                    if(Impacto(x2,y2,aux,auy,Canones.at(2)->getR())){
                         flag2 = 1;
                         break;
                     }
@@ -184,9 +184,9 @@ void MainWindow::Simulacion_3(float Ang, float VO0)
                     break;
                 }
                 if(Impacto(xf,yf,x2,y2,Canones.at(2)->getR())){
-                    Disparos.push_back(new Proyectil_Graph(Canones.at(1)->getPosx(),Canones.at(1)->getPosy(),angulo+90,V0o,Canones.at(1)->getPosx(),2));
+                    Disparos.push_back(new Proyectil_Graph(Canones.at(1)->getPosx(),v_limit-Canones.at(1)->getPosy(),angulo+90,V0o,Canones.at(1)->getPosx(),2));
                     scene->addItem(Disparos.back());
-                    Disparos.push_back(new Proyectil_Graph(Canones.at(1)->getPosx(),Canones.at(1)->getPosy(),angulo+90,V0o,Canones.at(1)->getPosx(),4));
+                    Disparos.push_back(new Proyectil_Graph(Canones.at(1)->getPosx(),v_limit-Canones.at(1)->getPosy(),angulo+90,V0o,Canones.at(1)->getPosx(),4));
                     scene->addItem(Disparos.back());
                     flag += 1;
                     V0o += 50;
@@ -206,6 +206,8 @@ void MainWindow::Simulacion_3(float Ang, float VO0)
         msgBox.exec();
     }
 }
+
+
 
 void MainWindow::on_pushButton_clicked()
 {
